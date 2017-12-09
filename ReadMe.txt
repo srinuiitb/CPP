@@ -1,2 +1,2 @@
 Solved Problems list :
-Matric Chain Multiplication
+Matric Chain Multiplication solution using dynamic programming.

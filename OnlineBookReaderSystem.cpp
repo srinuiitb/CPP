@@ -8,14 +8,7 @@
 #include <iostream>
 #include <conio.h>
 using namespace std;
-/*
-enum AccountType {
-    NORMAL,
-    SILVER,
-    PLATINUM,
-    GOLD
-};
-*/
+
 class Book {
     int id;
     string name;
@@ -70,6 +63,9 @@ public:
         it = books.find(book.getID());
         books.erase(it);
     }
+    bool addBook(Book book) {
+        books[book.getID()] = book;
+    }
     bool addBook(string name, string author) {
         Book book;
         book.setBookID(bookCount++);
@@ -89,6 +85,10 @@ public:
     }
     bool init(map<int,Book> books) {
         this->books = books;
+    }
+
+    int TotalBooks() {
+        return books.size();
     }
 
 private:
@@ -152,6 +152,11 @@ public:
         users[usr.getID()] = usr;
         cout << "Added new user, UserName = " << usr.getUserName() << ", Account Type = " << usr.getAccountType() << endl;
     }
+
+    bool addUser(User usr) {
+        users[usr.getID()] = usr;
+    }
+
     bool removeUser(User usr) {
         it = users.find(usr.getID());
         users.erase(it);
@@ -167,6 +172,10 @@ public:
     bool init(map<int, User> users) {
         this->users = users;
     }
+    int TotalUsers() {
+        return users.size();
+    }
+
 };
 int UserManagement::userCount = 1;
 class Display{
@@ -219,13 +228,17 @@ public:
 };
 
 class OnlineBookReaderSystem {
-    private:
-        Library lbr;
-        UserManagement usrMA;
-        Display dsp;
-    public:
-    OnlineBookReaderSystem(){
-        //cout << "Created  Online Book Reader System " << endl;
+private:
+    static bool IsInstanceCreated;
+    static OnlineBookReaderSystem* obrs;
+    OnlineBookReaderSystem() {}
+    Library lbr;
+    UserManagement usrMA;
+    Display dsp;
+public:
+    static OnlineBookReaderSystem* getInstance();
+    ~OnlineBookReaderSystem() {
+        IsInstanceCreated = false;
     }
     OnlineBookReaderSystem(Library lbr,UserManagement usrMA,Display dsp) {
         this->dsp = dsp;
@@ -259,9 +272,67 @@ class OnlineBookReaderSystem {
     Library getLibrarySystem() {
         return lbr;
     }
-
+    bool addLibrary(Library lbr){
+        this->lbr = lbr;
+    }
+    bool addUserManagement(UserManagement um) {
+        this->usrMA = um;
+    }
+    bool addDisplay(Display dsp) {
+        this->dsp;
+    }
 };
+bool OnlineBookReaderSystem::IsInstanceCreated = false;
+OnlineBookReaderSystem* OnlineBookReaderSystem::obrs = nullptr;
+OnlineBookReaderSystem* OnlineBookReaderSystem::getInstance() {
+    if(!IsInstanceCreated) {
+        obrs = new OnlineBookReaderSystem();
+        IsInstanceCreated = true;
+        return obrs;
+    }
+}
 
+
+int main() {
+    cout << "****************************************************************" << endl;
+    cout << "         Welcome to Online Book Reader System        " << endl;
+    cout << "****************************************************************" << endl;
+    cout << endl;
+
+    //Creating some books
+    Book Aptitude(1,"Aptitude","Vanaja");
+    Book Maths(2,"Maths","Srinu");
+    Book Cpp(3,"CPP - Programming","Srinu");
+    Book Reasoning(4,"Reasoning","Vanaja");
+
+    Library lbr;
+    lbr.addBook(Aptitude);
+    lbr.addBook(Maths);
+    lbr.addBook(Cpp);
+    lbr.addBook(Reasoning);
+
+    cout << " Total number of books in library = " << lbr.TotalBooks() << endl;
+    //Creating users
+    User Srinu(1,"GOLD","Srinu");
+    User Vanaja(2,"PLATINUM","Vanaja");
+
+    UserManagement um;
+    um.addUser(Srinu);
+    um.addUser(Vanaja);
+    cout << "Number of users = " << um.TotalUsers() << endl;
+
+    Display dsp;
+    OnlineBookReaderSystem *obrs = OnlineBookReaderSystem::getInstance();
+    obrs->addLibrary(lbr);
+    obrs->addUserManagement(um);
+    obrs->addDisplay(dsp);
+    return 0;
+}
+
+
+
+
+/*
 int main() {
     cout << "****************************************************************" << endl;
     cout << "         Welcome to Online Book Reader System        " << endl;
@@ -422,3 +493,4 @@ int main() {
     getch();
     return 0;
 }
+*/
